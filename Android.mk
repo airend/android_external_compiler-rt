@@ -262,6 +262,7 @@ libcompiler_rt_x86_64_SRC_FILES := \
 # we potentially need them when using a Clang-built component (e.g., -ftrapv
 # with 64-bit integer multiplies. See http://llvm.org/bugs/show_bug.cgi?id=14469.)
 libcompiler_rt_extras_SRC_FILES := \
+  lib/builtins/comparedf2.c \
   lib/builtins/mulodi4.c
 
 # $(1): arch

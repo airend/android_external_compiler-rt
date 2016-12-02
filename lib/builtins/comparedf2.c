@@ -80,7 +80,7 @@ __ledf2(fp_t a, fp_t b) {
     }
 }
 
-#if defined(__ELF__)
+#ifdef __aarch64__
 // Alias for libgcc compatibility
 FNALIAS(__cmpdf2, __ledf2);
 #endif
