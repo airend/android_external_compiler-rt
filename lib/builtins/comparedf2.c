@@ -47,71 +47,12 @@ enum LE_RESULT {
     LE_UNORDERED =  1
 };
 
-COMPILER_RT_ABI enum LE_RESULT
-__ledf2(fp_t a, fp_t b) {
-    
-    const srep_t aInt = toRep(a);
-    const srep_t bInt = toRep(b);
-    const rep_t aAbs = aInt & absMask;
-    const rep_t bAbs = bInt & absMask;
-    
-    // If either a or b is NaN, they are unordered.
-    if (aAbs > infRep || bAbs > infRep) return LE_UNORDERED;
-    
-    // If a and b are both zeros, they are equal.
-    if ((aAbs | bAbs) == 0) return LE_EQUAL;
-    
-    // If at least one of a and b is positive, we get the same result comparing
-    // a and b as signed integers as we would with a floating-point compare.
-    if ((aInt & bInt) >= 0) {
-        if (aInt < bInt) return LE_LESS;
-        else if (aInt == bInt) return LE_EQUAL;
-        else return LE_GREATER;
-    }
-    
-    // Otherwise, both are negative, so we need to flip the sense of the
-    // comparison to get the correct result.  (This assumes a twos- or ones-
-    // complement integer representation; if integers are represented in a
-    // sign-magnitude representation, then this flip is incorrect).
-    else {
-        if (aInt > bInt) return LE_LESS;
-        else if (aInt == bInt) return LE_EQUAL;
-        else return LE_GREATER;
-    }
-}
-
-#ifdef __aarch64__
-// Alias for libgcc compatibility
-FNALIAS(__cmpdf2, __ledf2);
-#endif
-
 enum GE_RESULT {
     GE_LESS      = -1,
     GE_EQUAL     =  0,
     GE_GREATER   =  1,
     GE_UNORDERED = -1   // Note: different from LE_UNORDERED
 };
-
-COMPILER_RT_ABI enum GE_RESULT
-__gedf2(fp_t a, fp_t b) {
-    
-    const srep_t aInt = toRep(a);
-    const srep_t bInt = toRep(b);
-    const rep_t aAbs = aInt & absMask;
-    const rep_t bAbs = bInt & absMask;
-    
-    if (aAbs > infRep || bAbs > infRep) return GE_UNORDERED;
-    if ((aAbs | bAbs) == 0) return GE_EQUAL;
-    if ((aInt & bInt) >= 0) {
-        if (aInt < bInt) return GE_LESS;
-        else if (aInt == bInt) return GE_EQUAL;
-        else return GE_GREATER;
-    } else {
-        if (aInt > bInt) return GE_LESS;
-        else if (aInt == bInt) return GE_EQUAL;
-        else return GE_GREATER;
-    }
-}
 
 ARM_EABI_FNALIAS(dcmpun, unorddf2)
 
@@ -121,26 +62,3 @@ __unorddf2(fp_t a, fp_t b) {
     const rep_t bAbs = toRep(b) & absMask;
     return aAbs > infRep || bAbs > infRep;
 }
-
-// The following are alternative names for the preceding routines.
-
-COMPILER_RT_ABI enum LE_RESULT
-__eqdf2(fp_t a, fp_t b) {
-    return __ledf2(a, b);
-}
-
-COMPILER_RT_ABI enum LE_RESULT
-__ltdf2(fp_t a, fp_t b) {
-    return __ledf2(a, b);
-}
-
-COMPILER_RT_ABI enum LE_RESULT
-__nedf2(fp_t a, fp_t b) {
-    return __ledf2(a, b);
-}
-
-COMPILER_RT_ABI enum GE_RESULT
-__gtdf2(fp_t a, fp_t b) {
-    return __gedf2(a, b);
-}
-
