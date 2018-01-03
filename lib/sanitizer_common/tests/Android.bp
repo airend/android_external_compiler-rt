@@ -27,6 +27,7 @@ cc_defaults {
         "-Werror",
         "-Wno-unused-parameter",
         "-Wno-non-virtual-dtor",
+        "-Wno-format",
     ],
 
     include_dirs: ["external/compiler-rt/lib"],

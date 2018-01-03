@@ -328,6 +328,8 @@ endef
 
 libcompiler_rt_common_CFLAGS := \
   -Wno-unused-parameter \
+  -Wno-visibility \
+  -Wno-incompatible-pointer-types \
   -Werror
 
 #=====================================================================
